@@ -89,9 +89,18 @@ const createScale = ({
   x?: number;
   width?: number;
   travellerWidth?: number;
-}) => {
+}): {
+  scale: ScalePoint<number>;
+  scaleValues: number[];
+  isTextActive?: boolean;
+  isSlideMoving?: boolean;
+  isTravellerMoving?: boolean;
+  isTravellerFocused?: boolean;
+  startX?: number;
+  endX?: number;
+} => {
   if (!data || !data.length) {
-    return {};
+    return { scale: null, scaleValues: null };
   }
 
   const len = data.length;
@@ -184,9 +193,7 @@ export class Brush extends PureComponent<Props, State> {
         prevUpdateId: updateId,
         prevX: x,
         prevWidth: width,
-        ...(data && data.length
-          ? createScale({ data, width, x, travellerWidth, startIndex, endIndex })
-          : { scale: null, scaleValues: null }),
+        ...createScale({ data, width, x, travellerWidth, startIndex, endIndex }),
       };
     }
     if (
