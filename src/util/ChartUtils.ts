@@ -21,7 +21,7 @@ import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 
 import { ReactElement, ReactNode } from 'react';
-import { getNiceTickValues, getTickValuesFixedDomain } from 'recharts-scale';
+import { getTickValuesFixedDomain } from 'recharts-scale';
 
 import { ErrorBar } from '../cartesian/ErrorBar';
 import { findEntryInArray, getPercentValue, isNumber, isNumOrStr, mathSign, uniqueId } from './DataUtils';
@@ -1052,32 +1052,18 @@ export const getStackGroupsByAxisId = (
  * @return {Object}      null
  */
 export const getTicksOfScale = (scale: any, opts: any) => {
-  const { realScaleType, type, tickCount, originalDomain, allowDecimals } = opts;
+  const { realScaleType, type, tickCount, allowDecimals } = opts;
   const scaleType = realScaleType || opts.scale;
 
   if (scaleType !== 'auto' && scaleType !== 'linear') {
     return null;
   }
 
-  if (
-    tickCount &&
-    type === 'number' &&
-    originalDomain &&
-    (originalDomain[0] === 'auto' || originalDomain[1] === 'auto')
-  ) {
-    // Calculate the ticks by the number of grid when the axis is a number axis
+  if (tickCount && type === 'number') {
     const domain = scale.domain();
     if (!domain.length) {
       return null;
     }
-    const tickValues = getNiceTickValues(domain, tickCount, allowDecimals);
-
-    scale.domain([min(tickValues), max(tickValues)]);
-
-    return { niceTicks: tickValues };
-  }
-  if (tickCount && type === 'number') {
-    const domain = scale.domain();
     const tickValues = getTickValuesFixedDomain(domain, tickCount, allowDecimals);
 
     return { niceTicks: tickValues };
